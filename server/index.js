@@ -429,7 +429,9 @@ app.use('/api', (req, res) => {
 });
 
 const currentDir = path.dirname(fileURLToPath(import.meta.url));
-const distPath = path.resolve(currentDir, '..', 'dist');
+const distDirectory = path.resolve(currentDir, '..', 'dist');
+const buildDirectory = path.resolve(currentDir, '..', 'build');
+const distPath = fs.existsSync(distDirectory) ? distDirectory : buildDirectory;
 
 if (config.serveStatic && fs.existsSync(distPath)) {
   app.use(express.static(distPath));
@@ -454,7 +456,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-const server = app.listen(config.port, () => {
+const server = app.listen(config.port, config.host, () => {
   console.log(`MeowNocode server is running on port ${config.port}`);
   console.log(`SQLite database located at ${config.sqlitePath}`);
 });

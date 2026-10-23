@@ -41,6 +41,7 @@ const sqlitePath = resolveDatabasePath();
 ensureDirectory(sqlitePath);
 
 export const config = {
+  host: process.env.HOST || '0.0.0.0',
   port: Number(process.env.PORT) || 3000,
   password: process.env.APP_PASSWORD ? process.env.APP_PASSWORD.trim() : '',
   initToken: process.env.INIT_TOKEN ? process.env.INIT_TOKEN.trim() : '',

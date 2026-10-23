@@ -1,5 +1,5 @@
 # Meow App
-![meow.png](https://pic.lover.nyc.mn/2025-08/meow_1754197450654.png)
+![Meow App 界面预览](public/images/meow-preview.jpeg)
 Meow App 是一个简洁的笔记应用，支持本地存储和云端同步。你可以使用Cloudflare D1作为云端数据库。
 
 ## 功能亮点：
@@ -21,15 +21,37 @@ D1公共实例的登录密钥是：`meow`。请勿上传不良信息和个人信
 
 
 ## 本地开发
-### 安装依赖
-```
+推荐使用 Node.js 22（版本已记录在 `.nvmrc`）。本地开发使用自带的 SQLite 后端，无需配置 Cloudflare、Supabase 或云端密钥。
+
+### 安装依赖与配置
+```bash
+# 已安装 nvm 时，先切换到项目版本
+nvm install
+nvm use
 npm install
+cp .env.example .env
 ```
 
-### 启动开发服务器
+如已有 `.env`，请保留现有配置并按 `.env.example` 补充本地后端变量。默认使用 `data/meownocode.db`，首次启动自动建表；本地口令 `APP_PASSWORD` 默认为空。
+
+### 启动前后端开发服务器
+```bash
+npm run dev:local
 ```
-npm run dev
+
+打开 <http://127.0.0.1:8080>。该命令同时启动支持热更新的 Vite 前端和监听文件变化的 SQLite 后端（`127.0.0.1:3000`）；前端 `/api` 请求会自动代理至后端。按 `Ctrl+C` 同时停止两者。
+
+如果未安装 nvm，且当前 Node.js 版本不兼容，可在 `npm install` 和 `npm run dev:local` 前添加 `npm exec --yes --package=node@22 --`，使用独立的 Node.js 22 运行时。
+
+也可分别在两个终端执行 `npm run server:dev` 和 `npm run dev`。只运行前端时，使用 `npm run dev`。
+
+### 构建与预览
+```bash
+npm run build
+npm run preview -- --host 127.0.0.1
 ```
+
+预览地址为 <http://127.0.0.1:4173>；验证 API 功能时需另行运行 `npm run server`。`npm run lint` 用于代码检查。
 
 ## 部署
 
@@ -114,7 +136,7 @@ npm run build
 npm run server
 ```
 
-构建产物会存放在 `dist/` 下，后端同样监听 `http://localhost:3000` 并使用 `data/meownocode.db` 作为本地持久化文件。
+构建产物会存放在 `build/` 下，后端同样监听 `http://localhost:3000` 并使用 `data/meownocode.db` 作为本地持久化文件。Docker 镜像会将构建产物复制到容器的 `dist/` 目录。
 
 ## 使用指南
 

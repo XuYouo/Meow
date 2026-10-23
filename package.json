@@ -8,11 +8,13 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:local": "concurrently --kill-others --names api,web \"npm run server:dev\" \"npm run dev -- --host 127.0.0.1\"",
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "server": "node server/index.js",
+    "server:dev": "node --watch server/index.js",
     "start": "node server/index.js",
     "electron": "electron .",
     "electron-dev": "concurrently \"npm run dev\" \"wait-on http://localhost:8080 && cross-env NODE_ENV=development electron .\"",

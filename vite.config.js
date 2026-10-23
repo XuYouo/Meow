@@ -1,5 +1,5 @@
 import { fileURLToPath, URL } from 'url';
-import { defineConfig } from 'vite';
+import { defineConfig, loadEnv } from 'vite';
 import { resolve } from 'path';
 import { tmpdir } from 'os';
 import { devLogger } from '@meituan-nocode/vite-plugin-dev-logger';
@@ -31,33 +31,47 @@ const plugins = isProdEnv
     ];
 
 // https://vitejs.dev/config/
-export default defineConfig({
-  server: {
-    host: '::',
-    port: '8080',
-    hmr: {
-      overlay: false,
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), '');
+  const proxy = {
+    '/api': {
+      target: `http://127.0.0.1:${env.PORT || 3000}`,
+      changeOrigin: true,
     },
-  },
-  plugins,
-  base: publicPath,
-  build: {
-    outDir,
-  },
-  optimizeDeps: {
-    include: ['sql.js'],
-  },
-  assetsInclude: ['**/*.wasm'],
-  resolve: {
-    alias: [
-      {
-        find: '@',
-        replacement: fileURLToPath(new URL('./src', import.meta.url)),
+  };
+
+  return {
+    server: {
+      host: '::',
+      port: '8080',
+      proxy,
+      hmr: {
+        overlay: false,
       },
-      {
-        find: 'lib',
-        replacement: resolve(__dirname, 'lib'),
-      },
-    ],
-  },
+    },
+    preview: {
+      proxy,
+    },
+    plugins,
+    base: publicPath,
+    build: {
+      outDir,
+    },
+    optimizeDeps: {
+      include: ['sql.js'],
+    },
+    assetsInclude: ['**/*.wasm'],
+    resolve: {
+      alias: [
+        {
+          find: '@',
+          replacement: fileURLToPath(new URL('./src', import.meta.url)),
+        },
+        {
+          find: 'lib',
+          replacement: resolve(__dirname, 'lib'),
+        },
+      ],
+    },
+  };
 });
