@@ -6,7 +6,7 @@ services:
     ports:
       - '127.0.0.1:${MEOW_HTTP_PORT:-3000}:3000'
     environment:
-      MEOW_OWNER_PASSWORD: ${MEOW_OWNER_PASSWORD:?Set a new owner password of at least 12 characters}
+      MEOW_OWNER_PASSWORD: ${MEOW_OWNER_PASSWORD:?Set a non-empty owner password}
       MEOW_PUBLIC_ORIGIN: ${MEOW_PUBLIC_ORIGIN:-}
       MEOW_AI_BASE_URL: ${MEOW_AI_BASE_URL:-}
       MEOW_AI_API_KEY: ${MEOW_AI_API_KEY:-}

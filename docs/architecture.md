@@ -99,6 +99,7 @@ flowchart LR
 ## 5. 身份、错误与外部边界
 
 - 口令只来自服务端环境配置，以 scrypt 保存哈希。客户端不保存口令；会话随机 token 仅 HttpOnly/SameSite=Strict cookie，数据库存哈希，支持到期和撤销，生产使用 Secure。
+- 按用户要求，工作区口令不设专用长度或复杂度门槛，配置读取与共享登录契约接受任意非空密码；未设置或留空时关闭 owner 登录，仅可公开浏览。通用 HTTP 请求体大小限制仍适用。
 - 写请求要求 X-Meow-Request=1，检查 Origin；不开放任意 CORS。路由显式 public/owner，未声明权限拒绝注册。共享口令拥有者是整个工作区 owner，不宣称逐用户资源隔离。
 - 公开 memo 的 links/backlinks 只投影公开目标，私有笔记不可通过搜索、预览、标签、AI context 或媒体 URL 绕过授权。
 - 统一错误 `{error:{code,message,requestId,details?}}`；400/401/403/404/409/413/429/5xx 分类，500 通用文案。只允许已知冲突 details 返回安全 DTO，日志仅记录可关联的状态/code/requestId，不打印 SQL、堆栈或秘密。

@@ -25,9 +25,6 @@ export function readConfig(environment: NodeJS.ProcessEnv = process.env): Server
     throw new Error('Production MEOW_PUBLIC_ORIGIN must use HTTPS.');
   }
   const ownerPassword = environment.MEOW_OWNER_PASSWORD;
-  if (ownerPassword !== undefined && (ownerPassword.length < 12 || ownerPassword.length > 1024)) {
-    throw new Error('MEOW_OWNER_PASSWORD must contain 12 to 1024 characters.');
-  }
   return {
     dataDir: path.resolve(environment.MEOW_DATA_DIR || 'data-v2'),
     host: environment.MEOW_HOST || '127.0.0.1',

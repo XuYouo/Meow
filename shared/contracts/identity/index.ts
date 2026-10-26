@@ -14,7 +14,7 @@ export const sessionContract = defineContract('GET', '/api/session', z.object({}
 export const loginContract = defineContract(
   'POST',
   '/api/session/login',
-  z.object({ password: z.string().min(1).max(1024) }).strict(),
+  z.object({ password: z.string().min(1) }).strict(),
   SessionSchema,
 );
 export const logoutContract = defineContract('POST', '/api/session/logout', z.object({}).strict(), SessionSchema);

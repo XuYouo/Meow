@@ -76,6 +76,12 @@
 ## 2026-10-26 环境配置清理
 
 - 本机 `.env` 已删除不再读取的旧版 `PASSWORD`、`APP_PASSWORD`、Supabase 和旧后端配置，保留当前配置读取器使用的 `MEOW_*` 项；没有修改数据库或附件。
-- `.env` 与 `.env.example` 不预置密码或 API 密钥。网页登录密码为注释中的 `MEOW_OWNER_PASSWORD`，用户取消注释、填写 12–1024 字符密码并重启后生效；未设置时仅可公开浏览。可选 `MEOW_AI_API_KEY` 留空，并明确其用途是 AI 服务商鉴权。
+- `.env` 与 `.env.example` 不预置密码或 API 密钥。网页登录密码为注释中的 `MEOW_OWNER_PASSWORD`，用户取消注释、填写自己的非空密码并重启后生效；未设置或留空时仅可公开浏览。可选 `MEOW_AI_API_KEY` 留空，并明确其用途是 AI 服务商鉴权。
 - `.gitignore` 忽略 `.env` 及 `.env.*` 本机配置，保留 `.env.example` 模板可跟踪；覆盖文档推荐的 `.env.v2`。
 - 已使用 `dotenv` 与实际 `readConfig` / `readIntegrationConfig` 验证两份配置的默认解析、未配置秘密时的状态和合成密码/AI 密钥配置；逐项核对变量均被运行时或 Compose 使用，检查本机 `.env` 权限仍为 `0600`、Git 忽略规则及 `git diff --check` 通过。配置检查使用主机 Node 25.3.0 与现有 tsx，仅调用纯配置读取器；未启动服务、打开数据库或重跑 Node 22.23.4 全量门禁。
+
+## 2026-10-26 登录密码长度调整
+
+- 按用户要求移除配置读取的 12–1024 字符限制和共享登录契约的 1024 字符上限，接受任意非空密码；未设置或留空时关闭 owner 登录。`.env` 中现有配置值保持不变，只更新说明注释；模板、README、架构与 Compose 提示同步调整。
+- 新增真实 HTTP/临时 SQLite 回归，覆盖 1 字符、6 字符及 1025 字符密码登录、会话生效和错误密码拒绝；同时验证空配置不会免密授予 owner。
+- 主机 Node 25.3.0 下严格类型检查、零 warning lint、30 个测试文件／196 项测试和前后端构建通过；`docker compose config --quiet` 与 `git diff --check` 通过。首次沙箱运行有 59 项 HTTP 测试因回环监听 `EPERM` 失败，允许临时回环端口后全量测试重跑通过。构建仍有既有的主 chunk 超过 500 kB 提示；本次未重跑 Node 22.23.4、实际 Docker 或浏览器验收。

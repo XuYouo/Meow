@@ -16,9 +16,9 @@ nvm use
 npm ci
 ```
 
-参照 [.env.example](.env.example) 创建自己的 `.env`，不要覆盖已有配置。至少设置新的 `MEOW_OWNER_PASSWORD`（12–1024 字符），并为 `MEOW_DATA_DIR` 指定**独立空目录**，默认 `./data-v2`。
+参照 [.env.example](.env.example) 创建自己的 `.env`，不要覆盖已有配置。设置自己的非空 `MEOW_OWNER_PASSWORD`（长度自定），并为 `MEOW_DATA_DIR` 指定**独立空目录**，默认 `./data-v2`。
 
-模板不含实际密码或 API 密钥。网页登录只使用 `MEOW_OWNER_PASSWORD`：在自己的 `.env` 中取消该行注释并填写密码，再重启后端；未设置时仅可公开浏览，不能登录。`MEOW_AI_API_KEY` 是可选的 AI 服务商密钥，与登录无关。旧版 `PASSWORD`、`APP_PASSWORD` 和 `VITE_SUPABASE_*` 已不再读取，不要继续使用。
+模板不含实际密码或 API 密钥。网页登录只使用 `MEOW_OWNER_PASSWORD`：在自己的 `.env` 中取消该行注释并填写密码，再重启后端；未设置或留空时仅可公开浏览，不能登录。`MEOW_AI_API_KEY` 是可选的 AI 服务商密钥，与登录无关。旧版 `PASSWORD`、`APP_PASSWORD` 和 `VITE_SUPABASE_*` 已不再读取，不要继续使用。
 
 ```sh
 npm run dev:local

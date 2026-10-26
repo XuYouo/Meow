@@ -78,6 +78,30 @@ describe('new identity and HTTP trust boundaries', () => {
     expect(JSON.stringify(test.runtime.db.prepare('SELECT password_hash FROM identity_credentials').get())).not.toContain(password);
   });
 
+  it.each([
+    { label: 'one-character', ownerPassword: 'x' },
+    { label: 'six-character', ownerPassword: 'short6' },
+    { label: 'longer-than-1024-character', ownerPassword: 'x'.repeat(1025) },
+  ])('allows a $label password through configuration and HTTP login', async ({ ownerPassword }) => {
+    const test = await fixture({ config: readConfig({ MEOW_DATA_DIR: temporaryDir(), MEOW_OWNER_PASSWORD: ownerPassword }) });
+    const response = await test.request('/api/session/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Meow-Request': '1' },
+      body: JSON.stringify({ password: ownerPassword }),
+    });
+    expect(response.status).toBe(200);
+    expect(SessionSchema.parse(await response.json()).authenticated).toBe(true);
+    const cookie = response.headers.get('set-cookie')?.split(';')[0];
+    expect(cookie).toBeTruthy();
+    expect(SessionSchema.parse(await (await test.request('/api/session', { headers: { Cookie: cookie || '' } })).json()).principal).toBe('owner');
+    const rejected = await test.request('/api/session/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'X-Meow-Request': '1' },
+      body: JSON.stringify({ password: `${ownerPassword}-incorrect` }),
+    });
+    expect(rejected.status).toBe(401);
+  });
+
   it('expires sessions and never turns an identity lookup failure into authentication', async () => {
     let time = '2026-10-24T00:00:00.000Z';
     const test = await fixture({ now: () => time });
@@ -101,10 +125,12 @@ describe('new identity and HTTP trust boundaries', () => {
   });
 
   it('has no implicit owner when password is absent and uses Secure cookies in production', async () => {
-    const anonymousConfig = readConfig({ MEOW_DATA_DIR: temporaryDir() });
-    const anonymousTest = await fixture({ config: anonymousConfig });
-    const failed = await anonymousTest.request('/api/session/login', { method: 'POST', headers: { 'X-Meow-Request': '1', 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
-    expect(failed.status).toBe(401);
+    for (const ownerPassword of [undefined, '']) {
+      const anonymousConfig = readConfig({ MEOW_DATA_DIR: temporaryDir(), MEOW_OWNER_PASSWORD: ownerPassword });
+      const anonymousTest = await fixture({ config: anonymousConfig });
+      const failed = await anonymousTest.request('/api/session/login', { method: 'POST', headers: { 'X-Meow-Request': '1', 'Content-Type': 'application/json' }, body: JSON.stringify({ password }) });
+      expect(failed.status).toBe(401);
+    }
     const production = await fixture({ config: readConfig({ NODE_ENV: 'production', MEOW_DATA_DIR: temporaryDir(), MEOW_OWNER_PASSWORD: password }) });
     expect((await production.login()).setCookie).toContain('Secure');
   });
