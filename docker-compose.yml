@@ -1,17 +1,23 @@
-version: '3.9'
-
 services:
-  meownocode:
+  meow:
     build: .
+    init: true
+    restart: unless-stopped
     ports:
-      - '3000:3000'
+      - '127.0.0.1:${MEOW_HTTP_PORT:-3000}:3000'
     environment:
-      APP_PASSWORD: 'change-me'
-      INIT_TOKEN: ''
-      CORS_ALLOW_ORIGIN: '*'
+      MEOW_OWNER_PASSWORD: ${MEOW_OWNER_PASSWORD:?Set a new owner password of at least 12 characters}
+      MEOW_PUBLIC_ORIGIN: ${MEOW_PUBLIC_ORIGIN:-}
+      MEOW_AI_BASE_URL: ${MEOW_AI_BASE_URL:-}
+      MEOW_AI_API_KEY: ${MEOW_AI_API_KEY:-}
+      MEOW_AI_MODEL: ${MEOW_AI_MODEL:-}
+      MEOW_MUSIC_SEARCH_URL: ${MEOW_MUSIC_SEARCH_URL-https://api.kxzjoker.cn/api/163_search}
+      MEOW_MUSIC_RESOLVE_URL: ${MEOW_MUSIC_RESOLVE_URL-https://api.kxzjoker.cn/api/163_music}
+      MEOW_BACKGROUND_URL: ${MEOW_BACKGROUND_URL-https://imgapi.xl0408.top/index.php}
+      MEOW_DNS_SERVERS: ${MEOW_DNS_SERVERS:-}
+      MEOW_HITOKOTO_URL: ${MEOW_HITOKOTO_URL-https://v1.hitokoto.cn/}
     volumes:
-      - meownocode-data:/data
+      - meow-v2-data:/data/meow-v2
 
 volumes:
-  meownocode-data:
-    driver: local
+  meow-v2-data:

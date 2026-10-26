@@ -1,10 +1,19 @@
 build
 node_modules
 .env
+.env.*
+!.env.example
 wrangler.toml
 .claude
-package-lock.json
 网易云搜索api.md
 网易云音乐api.md
 
 data/
+data-v2/
+dist/
+coverage/
+playwright-report/
+test-results/
+*.sqlite
+*.sqlite-wal
+*.sqlite-shm

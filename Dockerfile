@@ -1,46 +1,29 @@
-# syntax=docker/dockerfile:1
-
-FROM node:20-alpine AS builder
+FROM node:22.23.4-bookworm-slim AS builder
 WORKDIR /app
-
-RUN apk add --no-cache python3 make g++
-
-ARG VITE_SELF_HOSTED=true
-ENV VITE_SELF_HOSTED=$VITE_SELF_HOSTED
-
-COPY package*.json ./
-RUN npm install
-
+RUN apt-get update && apt-get install -y --no-install-recommends python3 make g++ && rm -rf /var/lib/apt/lists/*
+COPY package.json package-lock.json ./
+RUN npm ci --no-audit --no-fund
 COPY . .
 RUN npm run build
 
-FROM node:20-alpine AS runner
+FROM builder AS production-dependencies
+RUN npm prune --omit=dev --no-audit --no-fund
+
+FROM node:22.23.4-bookworm-slim AS runner
 WORKDIR /app
-
-ARG VITE_SELF_HOSTED=true
-ENV NODE_ENV=production
-ENV VITE_SELF_HOSTED=$VITE_SELF_HOSTED
-
-RUN apk add --no-cache su-exec
-
-COPY package*.json ./
-COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/build ./dist
-COPY --from=builder /app/server ./server
-COPY --from=builder /app/d1-schema.sql ./d1-schema.sql
-COPY docker-entrypoint.sh /entrypoint.sh
-
-RUN chmod +x /entrypoint.sh
-
-RUN npm prune --omit=dev
-
-RUN addgroup -S appgroup && adduser -S appuser -G appgroup
-
-ENV PORT=3000
-ENV SQLITE_DB_PATH=/data/meownocode.db
-
+ENV NODE_ENV=production \
+    MEOW_HOST=0.0.0.0 \
+    MEOW_PORT=3000 \
+    MEOW_DATA_DIR=/data/meow-v2 \
+    MEOW_STATIC_DIR=/app/build
+COPY --from=production-dependencies /app/node_modules ./node_modules
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/dist ./dist
+COPY --from=builder /app/build ./build
+RUN mkdir -p /data/meow-v2 && chown -R node:node /data
+USER node
 EXPOSE 3000
-VOLUME ["/data"]
-
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["node", "server/index.js"]
+VOLUME ["/data/meow-v2"]
+HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
+  CMD node -e "fetch('http://127.0.0.1:3000/api/health').then(r=>{if(!r.ok)process.exit(1)}).catch(()=>process.exit(1))"
+CMD ["node", "dist/server/main.js"]

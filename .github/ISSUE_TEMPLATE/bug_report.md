@@ -7,7 +7,6 @@ assignees: ''
 
 ---
 
-**I have confirmed forked repo is up date with this public repo**
 **Describe the bug**
 A clear and concise description of what the bug is.
 
@@ -26,7 +25,9 @@ If applicable, add screenshots to help explain your problem.
 
 **Info (please complete the following information):**
  - Browser [e.g. chrome, safari]
- - Database Config: local/Supabase/D1
+ - Runtime: local development / Node.js / Docker
+ - Node.js version and application version
+ - Owner or public view; online or offline (never include passwords or private notes)
 
 **Additional context**
 Add any other context about the problem here.

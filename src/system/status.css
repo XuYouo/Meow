@@ -1,0 +1,28 @@
+/* New failure/recovery states use the existing application's tokens and controls. */
+.status-banner { @apply mx-3 my-2 rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-800 dark:border-orange-900 dark:bg-orange-950 dark:text-orange-200; }
+.error-text { @apply my-2 text-xs text-red-600 dark:text-red-400; }
+.muted { @apply text-sm text-gray-500 dark:text-gray-400; }
+.button { @apply inline-flex h-10 items-center justify-center gap-2 whitespace-nowrap rounded-md border bg-white px-4 py-2 text-sm font-medium transition-colors hover:bg-gray-100 disabled:pointer-events-none disabled:opacity-50 dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700; }
+.button-primary { @apply border-transparent bg-primary text-primary-foreground hover:bg-primary/90; }
+.button-quiet { @apply border-transparent bg-transparent text-gray-500 shadow-none dark:bg-transparent; }
+.button-danger { @apply border-transparent bg-destructive text-destructive-foreground; }
+.field { @apply flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50; }
+textarea.field { @apply h-auto min-h-20; }
+.icon-button { @apply inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-md text-gray-500 transition-colors hover:bg-gray-100 disabled:opacity-50 dark:text-gray-400 dark:hover:bg-gray-700; }
+.text-button { @apply inline-flex items-center gap-1 border-0 bg-transparent p-0 text-xs text-gray-500 hover:text-primary; }
+.workspace-panel { @apply mb-4 rounded-lg border border-gray-200 bg-white p-4 dark:border-gray-700 dark:bg-gray-800; }
+.workspace-panel h2 { @apply mb-3 text-base font-semibold; }
+.form-grid { @apply grid grid-cols-1 gap-4 sm:grid-cols-2; }
+.dialog-actions { @apply mt-4 flex flex-wrap justify-end gap-2; }
+.modal-backdrop { @apply fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4; }
+.modal { @apply max-h-[90vh] w-full max-w-lg overflow-y-auto rounded-lg border bg-background p-6 shadow-lg; }
+.modal h2 { @apply mb-3 text-lg font-semibold; }
+.workspace-notice { @apply fixed bottom-6 left-1/2 z-[100] flex max-w-[90vw] -translate-x-1/2 items-center gap-4 rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm shadow-lg dark:border-gray-700 dark:bg-gray-800; }
+.conflict-card { @apply mx-3 my-2 rounded-lg border border-orange-200 bg-orange-50 p-3 text-sm dark:border-orange-900 dark:bg-orange-950; }
+.conflict-card h2 { @apply mb-2 text-sm font-semibold; }
+.conflict-card pre { @apply max-h-48 overflow-auto whitespace-pre-wrap text-xs; }
+.pending-media-row { @apply flex items-center gap-2 border-t border-gray-100 py-3 dark:border-gray-700; }
+.pending-media-row > span { @apply min-w-0 flex-1; }
+.pending-media-row strong, .pending-media-row small { @apply block break-words text-xs; }
+.startup-state { @apply flex min-h-screen flex-col items-center justify-center gap-4 p-6 text-center; }
+.sr-only { @apply absolute -m-px h-px w-px overflow-hidden whitespace-nowrap border-0 p-0; clip: rect(0, 0, 0, 0); }
